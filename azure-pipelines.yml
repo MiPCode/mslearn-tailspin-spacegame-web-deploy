@@ -24,3 +24,21 @@ stages:
     - publish: $(Build.ArtifactStagingDirectory)/publish
       artifact: webapp
       displayName: 'Publish build artifact'
+
+- stage: Dev
+  displayName: 'Dev environment'
+  dependsOn: Build
+  condition: succeeded()
+  jobs:
+  - job: DevJob
+    displayName: 'Deploy to Dev'
+    steps:
+    - download: current
+      artifact: webapp
+      displayName: 'Download build artifact'
+
+    - script: |
+        echo "Dev environment"
+        echo "Build artifact downloaded successfully"
+        ls -la $(Pipeline.Workspace)/webapp
+      displayName: 'Verify Dev artifact'
