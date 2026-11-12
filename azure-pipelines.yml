@@ -42,3 +42,22 @@ stages:
         echo "Build artifact downloaded successfully"
         ls -la $(Pipeline.Workspace)/webapp
       displayName: 'Verify Dev artifact'
+
+
+- stage: Test
+  displayName: 'Test environment'
+  dependsOn: Dev
+  condition: succeeded()
+  jobs:
+  - job: TestJob
+    displayName: 'Verify application artifact'
+    steps:
+    - download: current
+      artifact: webapp
+      displayName: 'Download build artifact'
+
+    - script: |
+        echo "Checking application files..."
+        test -f "$(Pipeline.Workspace)/webapp/MultistageDemo.dll"
+        echo "Application artifact verified successfully!"
+      displayName: 'Verify application DLL'
