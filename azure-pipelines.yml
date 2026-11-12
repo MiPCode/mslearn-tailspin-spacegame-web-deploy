@@ -61,3 +61,27 @@ stages:
         test -f "$(Pipeline.Workspace)/webapp/MultistageDemo.dll"
         echo "Application artifact verified successfully!"
       displayName: 'Verify application DLL'
+
+
+- stage: Staging
+  displayName: 'Staging environment'
+  dependsOn: Test
+  condition: succeeded()
+  jobs:
+  - deployment: StagingDeployment
+    displayName: 'Deploy to Staging'
+    environment: 'staging'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: current
+            artifact: webapp
+            displayName: 'Download build artifact'
+
+          - script: |
+              echo "Staging environment"
+              echo "Checking application files..."
+              test -f "$(Pipeline.Workspace)/webapp/MultistageDemo.dll"
+              echo "Staging artifact verified successfully!"
+            displayName: 'Verify Staging artifact'
