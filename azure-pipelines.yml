@@ -24,6 +24,14 @@ stages:
     - publish: $(Build.ArtifactStagingDirectory)/publish
       artifact: webapp
       displayName: 'Publish build artifact'
+    
+    - script: dotnet publish AzureFunctions/AzureFunctions.csproj --configuration Release --output $(Build.ArtifactStagingDirectory)/functions
+      displayName: 'Publish Azure Functions application'
+
+    - publish: $(Build.ArtifactStagingDirectory)/functions
+      artifact: functions
+      displayName: 'Publish Azure Functions artifact'
+
 
 - stage: Dev
   displayName: 'Dev environment'
